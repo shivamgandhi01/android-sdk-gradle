@@ -9,6 +9,10 @@ ENV SDK_HOME "/opt"
 ENV PATH "$PATH:${ANDROID_HOME}/tools"
 ENV DEBIAN_FRONTEND noninteractive
 
+ENV  NODEJS_DEFAULT_VERSION=6.9.1  
+ENV CORDOVA_DEFAULT_VERSION=7.0.1  
+ENV NVM_DIR=/opt/nvm 
+
 RUN apt-get -qq update && \
     apt-get install -qqy --no-install-recommends \
       curl \
@@ -32,6 +36,13 @@ RUN curl -s https://dl.google.com/android/repository/sdk-tools-linux-${VERSION_S
 RUN mkdir -p $ANDROID_HOME/licenses/ \
   && echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license \
   && echo "84831b9409646a918e30573bab4c9c91346d8abd" > $ANDROID_HOME/licenses/android-sdk-preview-license
+
+#install nvm and nodejs 
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash && \
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
+    nvm install ${NODEJS_DEFAULT_VERSION} && \
+    chmod -R 777 ${NVM_DIR} && \
+    npm install -g cordova@${CORDOVA_DEFAULT_VERSION}
 
 # Gradle
 ENV GRADLE_VERSION 4.1
